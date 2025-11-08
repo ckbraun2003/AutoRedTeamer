@@ -1,4 +1,4 @@
-from src.attacks._attack import BaseAttack
+from src._attack import BaseAttack
 
 class Pliny(BaseAttack):
 

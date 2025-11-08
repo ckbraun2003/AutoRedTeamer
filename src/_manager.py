@@ -47,7 +47,6 @@ class PromptManager:
                 }
                 prompt = Prompt(
                     name=data["name"],
-                    description=data.get("description"),
                     versions=versions,
                 )
                 self._cache[prompt.name] = prompt

@@ -2,12 +2,13 @@ from dataclasses import dataclass
 
 @dataclass
 class CaseReport:
+    testcaseidx: str
     strategy_design_report: str
     response_report: str
     evaluation_report: str
     relevancy_report: str
 
-class Memory:
+class CaseMemory:
     def __init__(self):
 
         self._current_test_case = 0
