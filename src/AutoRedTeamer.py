@@ -5,7 +5,7 @@ from typing import Dict, List, Tuple
 from src.nodes import *
 from src._utils import load_attack
 from src._llmclient import LLMClient
-from src._casememory import CaseMemory
+from src._memory import CaseMemory
 
 # Configure logging
 logging.basicConfig(

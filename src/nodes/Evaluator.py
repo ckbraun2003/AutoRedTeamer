@@ -1,30 +1,8 @@
-import logging
 import json
+
 from typing import Optional, Dict
 
-from src.nodes.BaseNode import BaseNode
-from src._llmclient import LLMClient
-
-class Evaluator(BaseNode):
-
-    # Configure logging
-    logging.basicConfig(
-        level=logging.DEBUG,
-        format='%(asctime)s - %(name)s - %(levelname)s - %(funcName)s - %(message)s',
-        handlers=[
-            logging.FileHandler('functions_log.txt'),
-            logging.StreamHandler()  # Also log to console
-        ]
-    )
-
-    def __init__(self,
-                 llm_client: Optional[LLMClient] = None,
-                 system_prompt: Optional[str] = None):
-
-        self.llm_client = llm_client if not None else LLMClient()
-        self.system_prompt = system_prompt
-
-        self.logger = logging.getLogger(self.__class__.__name__)
+class Evaluator:
 
     def generate(self,
                  test_case: str,

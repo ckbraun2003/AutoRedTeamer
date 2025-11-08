@@ -1,34 +1,8 @@
-import logging
-from typing import Optional
+from src.nodes import _node
 
-from src.nodes.BaseNode import BaseNode
-from src._llmclient import LLMClient
+class RiskAnalyzer(Node):
 
-class RiskAnalyzer(BaseNode):
-
-    # Configure logging
-    logging.basicConfig(
-        level=logging.DEBUG,
-        format='%(asctime)s - %(name)s - %(levelname)s - %(funcName)s - %(message)s',
-        handlers=[
-            logging.FileHandler('functions_log.txt'),
-            logging.StreamHandler()  # Also log to console
-        ]
-    )
-
-    def __init__(self,
-                 llm_client: Optional[LLMClient] = None,
-                 system_prompt: Optional[str] = None):
-
-        self.llm_client = llm_client if not None else LLMClient("mixtral")
-        self.system_prompt = system_prompt
-
-        self.logger = logging.getLogger(self.__class__.__name__)
-
-    def generate(self,
-                 user_input: str) -> str:
-
-        self.logger.info(f"Generating risk analysis for [{user_input}]")
+    def generate(self, user_input: str) -> str:
 
         categories = ["Summary", "Detailed Analysis", "Specific Test Case Scope"]
         message = self.format_prompt(user_input)
@@ -40,6 +14,7 @@ class RiskAnalyzer(BaseNode):
             self.logger.debug(response)
             return self.generate(user_input)
 
+    @staticmethod
     def format_prompt(self,
                       user_input: str) -> str:
 
