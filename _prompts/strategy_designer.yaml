@@ -43,7 +43,7 @@ versions:
       selected, addressing the key areas of consideration above", "selected attack": "name of selected attack" }
 
     defaults:
-      current_test_case: ""
+      current_testcase: ""
       available_attacks: ""
       attack_success_rates: ""
       previous_attacks: ""

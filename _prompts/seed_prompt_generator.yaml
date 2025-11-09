@@ -30,5 +30,5 @@ versions:
 
     defaults:
       test_subject: ""
-      num_test_cases: 5
+      num_testcases: 5
       risk_analysis: ""

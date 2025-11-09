@@ -1,6 +1,6 @@
-from abc import ABC, abstractmethod
+from abc import abstractmethod
 
-class BaseAttack(ABC):
+class BaseAttack:
 
     @abstractmethod
     def run(self):
@@ -8,6 +8,6 @@ class BaseAttack(ABC):
         pass
 
     @abstractmethod
-    def generate_test_case(self, **kwargs):
+    def generate_test_case(self, prompt):
         '''Insert relevant inputs here, This function is for singular test case generation'''
-        pass
+        return prompt

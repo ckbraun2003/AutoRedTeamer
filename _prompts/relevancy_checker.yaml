@@ -24,5 +24,5 @@ versions:
 
     defaults:
       test_subject: ""
-      current_test_case: ""
+      current_testcase: ""
       test_prompt: ""

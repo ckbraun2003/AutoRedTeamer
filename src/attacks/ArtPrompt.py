@@ -1,4 +1,4 @@
-from src._attack import BaseAttack
+from src.attacks.BaseAttack import BaseAttack
 
 class ArtPrompt(BaseAttack):
 

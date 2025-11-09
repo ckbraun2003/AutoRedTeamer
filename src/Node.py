@@ -22,6 +22,7 @@ class Node:
             try:
                 parsed_response = json.loads(response)
             except json.JSONDecodeError:
+                system_prompt = "Previous Invalid Response: {response}\n" + system_prompt
                 continue  # retry
 
             enforced_response = self._enforce_data_type(parsed_response, self.expected_type)
