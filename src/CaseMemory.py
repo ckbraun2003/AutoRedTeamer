@@ -1,3 +1,4 @@
+from itertools import chain
 from dataclasses import dataclass
 
 
@@ -17,9 +18,9 @@ class CaseMemory:
         self._risk_analysis = None
         self._testcases = None
 
-        self._current_testcase = 0
+        self._current_testcase_attempt = 0
         self._current_testcaseidx = ""
-        self._current_testcase_report = TestCaseReport()
+        self._current_testcase_report = None
 
         self._testcase_reports = {}
 
@@ -33,7 +34,7 @@ class CaseMemory:
         self._current_testcase_report = testcase_report
 
     def _increment_testcase(self) -> None:
-        self._current_testcase += 1
+        self._current_testcase_attempt += 1
 
     def set_risk_analysis(self, risk_analysis: str) -> None:
         self._risk_analysis = risk_analysis
@@ -44,9 +45,18 @@ class CaseMemory:
     def set_testcases(self, testcases: list) -> None:
         self._testcases = testcases
 
+    def previous_attacks(self, testcaseidx: str) -> list:
+        reports = self._testcase_reports.get(testcaseidx, [])
+        return [r.strategy_design_report for r in reports if r.strategy_design_report is not None]
+
     @property
-    def current_testcase(self) -> int:
-        return self._current_testcase
+    def total_compromised(self) -> int:
+        reports =  list(chain.from_iterable(self._testcase_reports.values()))
+        return len([r.strategy_design_report for r in reports if r.was_compromised])
+
+    @property
+    def current_testcase_attempt(self) -> int:
+        return self._current_testcase_attempt
 
     @property
     def current_testcaseidx(self) -> str:
@@ -55,8 +65,3 @@ class CaseMemory:
     @property
     def current_testcase_report(self) -> TestCaseReport:
         return self._current_testcase_report
-
-    @property
-    def previous_attacks(self, testcaseidx: str) -> list:
-        reports = self._testcase_reports.get(testcaseidx, [])
-        return [r.strategy_design_report for r in reports if r.strategy_design_report is not None]

@@ -45,7 +45,7 @@ class AutoRedTeamer:
             for testcase in testcases:
                 testcaseidx = testcase["testcaseidx"]
                 for _ in range(max_test_iterations):
-                    previous_attacks = case_memory.previous_attacks
+                    previous_attacks = case_memory.previous_attacks(testcaseidx)
                     testcase_report = self.evaluate_testcase(test_subject,
                                                              testcaseidx,
                                                              testcase,
@@ -199,7 +199,7 @@ class AutoRedTeamer:
                            attack: str) -> str:
 
         attack_class = load_module(attack)
-        new_prompt = attack_class.generate_test_case(prompt=prompt)
+        new_prompt = attack_class.generate_attack_prompt(prompt=prompt)
 
         return new_prompt
 
