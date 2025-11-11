@@ -1,10 +1,10 @@
 import json
 
-from typing import List, Dict, Optional
+from typing import Optional
 
 class Node:
 
-    def __init__(self, required_keys: List[str] = None, max_iterations: int = 5, expected_type: type = dict) -> None:
+    def __init__(self, required_keys: list[str] = None, max_iterations: int = 5, expected_type: type = dict) -> None:
 
         self._required_keys = required_keys
         self._max_iterations = max_iterations
@@ -19,16 +19,17 @@ class Node:
         for _ in range(self.max_iterations):
             response = llm_client.invoke(system_prompt)
 
-            try:
-                parsed_response = json.loads(response)
-            except json.JSONDecodeError:
-                system_prompt = "Previous Invalid Response: {response}\n" + system_prompt
-                continue  # retry
+            if self._expected_type is dict or self._expected_type is list:
+                try:
+                    response = json.loads(response)
+                except json.JSONDecodeError:
+                    system_prompt = "Previous Invalid Response: {response}\n" + system_prompt
+                    continue  # retry
 
-            enforced_response = self._enforce_data_type(parsed_response, self.expected_type)
-            if parsed_response is not None:
-                self._cached_response = parsed_response
-                return parsed_response
+            enforced_response = self._enforce_data_type(response, self.expected_type)
+            if enforced_response is not None:
+                self._cached_response = enforced_response
+                return enforced_response
 
         raise RuntimeError("Failed to generate valid response after max iterations")
 
@@ -42,7 +43,11 @@ class Node:
                     self._enforce_data_type(response[0], expected_type)
 
         if expected_type is list and self.required_keys:
-            return all(self._check_required_keys(self.required_keys, response) for item in response)
+            return [
+                result
+                for item in response
+                if (result := self._check_required_keys(self.required_keys, item)) is not None
+            ]
 
         if isinstance(response, expected_type):
             return response
@@ -50,7 +55,7 @@ class Node:
         return None
 
     @staticmethod
-    def _check_required_keys(required_keys: List[str], response: Dict[str, str]):
+    def _check_required_keys(required_keys: list[str], response: dict[str, str]):
         if not required_keys:
             return response
 
@@ -66,7 +71,7 @@ class Node:
         return None
 
     @property
-    def previous_response(self) -> Optional[Dict[str, str], str]:
+    def previous_response(self):
         return self._cached_response
 
     @property
@@ -78,5 +83,5 @@ class Node:
         return self._expected_type
 
     @property
-    def required_keys(self) -> List[str]:
+    def required_keys(self) -> list[str]:
         return self._required_keys

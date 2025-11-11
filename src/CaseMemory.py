@@ -47,7 +47,7 @@ class CaseMemory:
 
     def previous_attacks(self, testcaseidx: str) -> list:
         reports = self._testcase_reports.get(testcaseidx, [])
-        return [r.strategy_design_report for r in reports if r.strategy_design_report is not None]
+        return [r.strategy_design_report for r in reports if r.strategy_design_report is not None and not r.was_compromised]
 
     @property
     def total_compromised(self) -> int:
