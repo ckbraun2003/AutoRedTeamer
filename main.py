@@ -1,5 +1,5 @@
 import logging
-import time
+import datetime
 import os
 
 from src.CaseMemory import CaseMemory
@@ -8,6 +8,7 @@ from src.LLMClient import LLMClient
 from src.AutoRedTeamer import AutoRedTeamer
 
 from src._configs import NodeConfigs
+from src._utils import print_red_team_summary
 
 GREEN = "\033[92m"
 CYAN = "\033[96m"
@@ -52,10 +53,10 @@ if __name__ == "__main__":
 
     test_model_name = "mistral"
     test_subject = "Illegal substance production"
-    num_testcases = 1
-    max_test_iterations = 1
+    num_testcases = 3
+    max_test_iterations = 3
 
-    test_model = LLMClient(llm_logger, model_name=test_model_name, temperature=0.5)
+    test_model = LLMClient(llm_logger, model_name=test_model_name, temperature=1.0)
 
     client = LLMClient(llm_logger, model_name="mixtral", temperature=0.5)
     manager = PromptManager()
@@ -64,7 +65,7 @@ if __name__ == "__main__":
     auto_red_teamer = AutoRedTeamer(NodeConfigs)
 
     try:
-        start_time = time.time()
+        start_time = datetime.datetime.now()
         finished = auto_red_teamer.run_red_team_event(test_subject=test_subject,
                                        llm_client=client,
                                        llm_test=test_model,
@@ -74,27 +75,30 @@ if __name__ == "__main__":
                                        num_testcases=num_testcases,
                                        max_test_iterations=max_test_iterations)
 
-        end_time = time.time()
-        total_time_taken = (end_time - start_time) / 60
+        end_time = datetime.datetime.now()
 
         if finished:
-            time.sleep(1)
-            print(f"""
-            {MAGENTA}{BOLD}╔════════════════════════════════════════════════════════╗{RESET}
-            {MAGENTA}{BOLD}║{RESET}              {CYAN}    AutoRedTeamer Diagnostics{RESET}{MAGENTA}{BOLD}║{RESET}
-            {MAGENTA}{BOLD}╠════════════════════════════════════════════════════════╣{RESET}
-            {MAGENTA}{BOLD}║{RESET}  {BOLD}Test Subject{RESET:<16}: {test_subject}
-            {MAGENTA}{BOLD}║{RESET}  {BOLD}Model Tested{RESET:<17}: {test_model_name}
-            {MAGENTA}{BOLD}║{RESET}  {BOLD}Total Vulnerabilities{RESET:<9}: {RED}{memory.total_compromised}{RESET}
-            {MAGENTA}{BOLD}║{RESET}  {BOLD}Total Tests{RESET:<18}: {YELLOW}{memory.current_testcase_attempt}{RESET}
-            {MAGENTA}{BOLD}║{RESET}  {BOLD}Total LLM Calls{RESET:<14}: {GREEN}{client.llm_calls + test_model.llm_calls}{RESET}
-            {MAGENTA}{BOLD}║{RESET}  {BOLD}Total Time Taken{RESET:<12}: {CYAN}{total_time_taken:.2f} minutes{RESET}
-            {MAGENTA}{BOLD}╚════════════════════════════════════════════════════════╝{RESET}
-                """)
+
+            total_compromised = memory.total_compromised
+            total_tests = memory.total_test_attempts
+            total_llm_calls = client.llm_calls + test_model.llm_calls
+            total_time_taken = end_time - start_time
+            attack_stats = memory.attacks_stats
+
+
+            print_red_team_summary(test_subject=test_subject,
+                                   test_model_name=test_model_name,
+                                   total_compromised=total_compromised,
+                                   total_tests=total_tests,
+                                   total_llm_calls=total_llm_calls,
+                                   total_time_taken=total_time_taken,
+                                   start_time=start_time,
+                                   end_time=end_time,
+                                   attack_stats=attack_stats)
 
         else:
-            system_logger.error(f"Error occured -- (finished={finished})")
+            system_logger.error(f"Error occurred -- (finished={finished})")
 
     except RuntimeError as e:
-        system_logger.error(f"Error occured -- {e}")
+        system_logger.error(f"Error occurred -- {e}")
 

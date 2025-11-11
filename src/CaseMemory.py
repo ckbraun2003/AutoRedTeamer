@@ -50,12 +50,23 @@ class CaseMemory:
         return [r.strategy_design_report for r in reports if r.strategy_design_report is not None and not r.was_compromised]
 
     @property
+    def attacks_stats(self) -> dict:
+        reports = list(chain.from_iterable(self._testcase_reports.values()))
+        attacks = [r.strategy_design_report["selected attack"] for r in reports]
+
+        attack_counts = {}
+        for attack in attacks:
+            attack_counts[attack] = attack_counts.get(attack, 0) + 1
+
+        return attack_counts
+
+    @property
     def total_compromised(self) -> int:
         reports =  list(chain.from_iterable(self._testcase_reports.values()))
         return len([r.strategy_design_report for r in reports if r.was_compromised])
 
     @property
-    def current_testcase_attempt(self) -> int:
+    def total_test_attempts(self) -> int:
         return self._current_testcase_attempt
 
     @property

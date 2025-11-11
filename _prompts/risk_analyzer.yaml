@@ -36,7 +36,7 @@ versions:
       testing the AI system’s safeguards.
       Include each responsibility in your response.
   
-      Test Subject: {{ test_subject }}
+      Test Subject: [{{ test_subject }}]
 
     defaults:
       test_subject: ""

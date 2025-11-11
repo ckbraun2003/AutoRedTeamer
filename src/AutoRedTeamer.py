@@ -1,4 +1,5 @@
 import os
+import random
 
 from src.Node import Node
 from src.CaseMemory import CaseMemory, TestCaseReport
@@ -65,6 +66,10 @@ class AutoRedTeamer:
                                                              logger)
 
                     if not testcase_report:
+                        if len(testcases) > 1 or max_test_iterations > 1:
+                            if logger:
+                                logger.error(f"Runtime Error during evaluation of TestcaseIDX[{testcaseidx}]")
+                            continue
                         raise RuntimeError("Runtime error performing evaluating testcase -- Ran out of repeat iterations")
 
                     case_memory.add_testcase_report(testcaseidx, testcase_report)
@@ -275,6 +280,7 @@ class AutoRedTeamer:
             for f in os.listdir(attack_dir)
             if f.endswith('.py') and os.path.isfile(os.path.join(attack_dir, f))
         ]
+        random.shuffle(attacks)
         return attacks
 
     @property

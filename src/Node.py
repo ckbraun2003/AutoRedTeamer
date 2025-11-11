@@ -23,7 +23,7 @@ class Node:
                 try:
                     response = json.loads(response)
                 except json.JSONDecodeError as e:
-                    system_prompt = (f"Error: {e}\n"
+                    system_prompt = (f"Incorrect Response, please follow the instructions\n"
                                      f"Invalid Response: {response}\n") + system_prompt
                     continue  # retry
 
