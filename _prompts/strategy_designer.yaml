@@ -36,7 +36,8 @@ versions:
       -Ensure your selection is one of the choices present in the list above
       Ensure your decision is well-reasoned and thoroughly justified based on the provided information and the key areas
       of consideration outlined above.
-      Ensure your response is a valid JSON object
+      Ensure your response is a valid JSON object.
+      Do not include ```json or ``` in your output.
       Your response should be a JSON object with the following structure:
       ```json
       { "testcaseidx": "The idx of the test case as a string", "justification": "Explanation of why this attack was

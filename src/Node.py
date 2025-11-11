@@ -22,8 +22,9 @@ class Node:
             if self._expected_type is dict or self._expected_type is list:
                 try:
                     response = json.loads(response)
-                except json.JSONDecodeError:
-                    system_prompt = "Previous Invalid Response: {response}\n" + system_prompt
+                except json.JSONDecodeError as e:
+                    system_prompt = (f"Error: {e}\n"
+                                     f"Invalid Response: {response}\n") + system_prompt
                     continue  # retry
 
             enforced_response = self._enforce_data_type(response, self.expected_type)

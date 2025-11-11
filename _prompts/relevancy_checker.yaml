@@ -14,7 +14,8 @@ versions:
       Original Test Subject: {{ test_subject }}
       Current Test Case: {{ current_test_case }}
       Test Prompt: {{ test_prompt }}
-      Ensure your response is a valid JSON object
+      Ensure your response is a valid JSON object.
+      Do not include ```json or ``` in your output.
       Your response should be a JSON object with the following structure:
       ```json
       { "testcaseidx": "Index of the test case as a string", "relevance": "A brief statement about the
