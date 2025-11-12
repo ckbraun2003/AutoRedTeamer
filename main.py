@@ -53,7 +53,7 @@ if __name__ == "__main__":
 
     test_model_name = "mistral"
     test_subject = "Illegal substance production"
-    num_testcases = 3
+    num_testcases = 10
     max_test_iterations = 3
 
     test_model = LLMClient(llm_logger, model_name=test_model_name, temperature=1.0)
@@ -80,16 +80,20 @@ if __name__ == "__main__":
         if finished:
 
             total_compromised = memory.total_compromised
-            total_tests = memory.total_test_attempts
+            successful_test_attempts = memory.successful_test_attempts
+            failed_test_attempts = memory.failed_test_attempts
+            total_test_attempts = memory.total_test_attempts
             total_llm_calls = client.llm_calls + test_model.llm_calls
-            total_time_taken = end_time - start_time
+            total_time_taken = (end_time - start_time).total_seconds()
             attack_stats = memory.attacks_stats
 
 
             print_red_team_summary(test_subject=test_subject,
                                    test_model_name=test_model_name,
                                    total_compromised=total_compromised,
-                                   total_tests=total_tests,
+                                   total_test_attempts=total_test_attempts,
+                                   failed_test_attempts=failed_test_attempts,
+                                   successful_test_attempts=successful_test_attempts,
                                    total_llm_calls=total_llm_calls,
                                    total_time_taken=total_time_taken,
                                    start_time=start_time,

@@ -18,7 +18,8 @@ def load_module(module_name: str, path: str = "src/attacks"):
     return model_class()
 
 def print_red_team_summary(test_subject, test_model_name, total_compromised,
-                           total_tests, total_llm_calls, total_time_taken,
+                           total_test_attempts, failed_test_attempts, successful_test_attempts,
+                           total_llm_calls, total_time_taken,
                            start_time=None, end_time=None, attack_stats=None):
     """
     Print a comprehensive professional summary of red team testing results.
@@ -27,7 +28,7 @@ def print_red_team_summary(test_subject, test_model_name, total_compromised,
         test_subject: Name/ID of the system being tested
         test_model_name: Name of the model used for testing
         total_compromised: Number of successful compromises
-        total_tests: Total number of tests executed
+        total_test_attempts: Total number of tests executed
         total_llm_calls: Total API calls made
         total_time_taken: Total time in seconds
         start_time: Optional datetime when testing started
@@ -36,11 +37,11 @@ def print_red_team_summary(test_subject, test_model_name, total_compromised,
     """
 
     # Calculate additional metrics
-    success_rate = (total_compromised / total_tests * 100) if total_tests > 0 else 0
+    success_rate = (total_compromised / successful_test_attempts * 100) if successful_test_attempts > 0 else 0
     failure_rate = 100 - success_rate
-    avg_time_per_test = total_time_taken / total_tests if total_tests > 0 else 0
-    avg_calls_per_test = total_llm_calls / total_tests if total_tests > 0 else 0
-    tests_per_minute = (total_tests / total_time_taken * 60) if total_time_taken > 0 else 0
+    avg_time_per_test = total_time_taken / total_test_attempts if total_test_attempts > 0 else 0
+    avg_calls_per_test = total_llm_calls / total_test_attempts if total_test_attempts > 0 else 0
+    tests_per_minute = (total_test_attempts / total_time_taken * 60) if total_time_taken > 0 else 0
 
     # Format time nicely
     def format_time(seconds):
@@ -80,9 +81,9 @@ def print_red_team_summary(test_subject, test_model_name, total_compromised,
 
     # Execution Summary
     print("\n┌─ Execution Summary " + "─"*58 + "┐")
-    print(f"│  Total Tests Executed   : {total_tests:<53}")
+    print(f"│  Total Tests Executed   : {successful_test_attempts:<53}")
     print(f"│  Successful Compromises : {total_compromised:<53}")
-    print(f"│  Failed Attempts        : {total_tests - total_compromised:<53}")
+    print(f"│  Failed Compromises     : {successful_test_attempts - total_compromised:<53}")
     print(f"│  Success Rate           : {success_rate:.2f}%{' '*50}")
     print(f"│  Failure Rate           : {failure_rate:.2f}%{' '*50}")
     print(f"│  Total LLM Calls        : {total_llm_calls:<53}")
@@ -101,7 +102,7 @@ def print_red_team_summary(test_subject, test_model_name, total_compromised,
         print("\n┌─ Attack Statistics " + "─"*50 + "┐")
         sorted_vectors = sorted(attack_stats.items(), key=lambda x: x[1], reverse=True)
         for i, (vector, count) in enumerate(sorted_vectors[:5]):  # Top 5
-            percentage = (count / total_compromised * 100) if total_compromised > 0 else 0
+            percentage = (count / successful_test_attempts  * 100) if successful_test_attempts  > 0 else 0
             bar_length = int(percentage / 2)  # Scale to 50 chars max
             bar = "█" * bar_length + "░" * (50 - bar_length)
             vector_name = vector[:20].ljust(20)
@@ -138,5 +139,7 @@ def print_red_team_summary(test_subject, test_model_name, total_compromised,
     # Summary Statistics Box
     print("┌─ Key Metrics Summary " + "─"*56 + "┐")
     print(f"│  Vulnerability Score    : {success_rate:.1f}/100{' '*49}")
-    print(f"│  Tests Completed        : {total_tests} {' '*40}")
+    print(f"│  Tests Attempted        : {total_test_attempts} {' '*40}")
+    print(f"│  Tests Failed           : {failed_test_attempts} {' ' * 40}")
+    print(f"│  Tests Completed        : {successful_test_attempts} {' '*40}")
     print(f"│  Efficiency Rating      : {tests_per_minute:.1f} tests/min{' '*44}")

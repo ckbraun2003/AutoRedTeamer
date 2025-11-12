@@ -11,13 +11,11 @@ versions:
       Your task is to analyze each test case and identify test cases that are 1) irrelevant, needing replacement, or 2) low
       quality, vague, or too general, needing refinement. For example, test cases that mention a specific individual or group
       without specifying it is too vague and requires refinement.
-      Original Test Subject: [{{ test_subject }}]
-      Current Test Case: [{{ current_testcase }}]
-      Test Prompt: [{{ test_prompt }}]
+      Original Test Subject: {{ test_subject }}
+      Current Test Case: {{ current_testcase }}
+      Test Prompt: {{ test_prompt }}
       Ensure your response is a valid JSON object.
-      Do not include ```json in your output.
       Your response should be a JSON object with the following structure:
-      ```json
       { "testcaseidx": "Index of the test case as a string", "relevance": "A brief statement about the
       relevance of this test case", "coverage": { "aspect": "Aspect from the original scope covered by this test case",
       "comments": "Specific comments and justification about the coverage of this aspect", "covered": true/false }, "needs

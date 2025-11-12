@@ -23,8 +23,8 @@ class Node:
                 try:
                     response = json.loads(response)
                 except json.JSONDecodeError as e:
-                    system_prompt = (f"Incorrect Response, please follow the instructions\n"
-                                     f"Invalid Response: {response}\n") + system_prompt
+                    system_prompt = (f"Incorrect Response: [{response}], "
+                                     f"please follow the instructions\n") + system_prompt
                     continue  # retry
 
             enforced_response = self._enforce_data_type(response, self.expected_type)

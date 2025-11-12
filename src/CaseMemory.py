@@ -18,7 +18,8 @@ class CaseMemory:
         self._risk_analysis = None
         self._testcases = None
 
-        self._current_testcase_attempt = 0
+        self._successful_test_attempts = 0
+        self._failed_test_attempts = 0
         self._current_testcaseidx = ""
         self._current_testcase_report = None
 
@@ -30,11 +31,14 @@ class CaseMemory:
         self._testcase_reports[testcaseidx].append(testcase_report)
 
         self._current_testcaseidx = testcaseidx
-        self._increment_testcase()
+        self._increment_successul_attempts()
         self._current_testcase_report = testcase_report
 
-    def _increment_testcase(self) -> None:
-        self._current_testcase_attempt += 1
+    def _increment_successul_attempts(self) -> None:
+        self._successful_test_attempts += 1
+
+    def _increment_failed_attempts(self) -> None:
+        self._failed_test_attempts += 1
 
     def set_risk_analysis(self, risk_analysis: str) -> None:
         self._risk_analysis = risk_analysis
@@ -47,7 +51,7 @@ class CaseMemory:
 
     def previous_attacks(self, testcaseidx: str) -> list:
         reports = self._testcase_reports.get(testcaseidx, [])
-        return [r.strategy_design_report for r in reports if r.strategy_design_report is not None and not r.was_compromised]
+        return [r.strategy_design_report["selected attack"] for r in reports if r.strategy_design_report is not None and not r.was_compromised]
 
     @property
     def attacks_stats(self) -> dict:
@@ -66,8 +70,16 @@ class CaseMemory:
         return len([r.strategy_design_report for r in reports if r.was_compromised])
 
     @property
+    def successful_test_attempts(self) -> int:
+        return self._successful_test_attempts
+
+    @property
+    def failed_test_attempts(self) -> int:
+        return self._failed_test_attempts
+
+    @property
     def total_test_attempts(self) -> int:
-        return self._current_testcase_attempt
+        return self._failed_test_attempts + self._successful_test_attempts
 
     @property
     def current_testcaseidx(self) -> str:
