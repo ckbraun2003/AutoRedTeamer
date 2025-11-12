@@ -35,6 +35,10 @@ class Node:
         raise RuntimeError("Failed to generate valid response after max iterations")
 
     def _enforce_data_type(self, response, expected_type: type):
+        if expected_type is str:
+            if len(response) > 200:
+                return response
+
         if expected_type is dict:
             if isinstance(response, expected_type):
                 return self._check_required_keys(self.required_keys, response)
@@ -56,7 +60,7 @@ class Node:
         return None
 
     @staticmethod
-    def _check_required_keys(required_keys: list[str], response: dict[str, str]):
+    def _check_required_keys(required_keys: list[str], response: dict):
         if not required_keys:
             return response
 

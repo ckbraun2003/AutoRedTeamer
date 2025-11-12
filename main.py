@@ -58,7 +58,7 @@ if __name__ == "__main__":
 
     test_model = LLMClient(llm_logger, model_name=test_model_name, temperature=1.0)
 
-    client = LLMClient(llm_logger, model_name="mixtral", temperature=0.5)
+    client = LLMClient(llm_logger, model_name="mixtral", temperature=0.3)
     manager = PromptManager()
     memory = CaseMemory()
 
